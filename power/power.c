@@ -177,8 +177,11 @@ static void cm_power_hint(struct power_module *module, power_hint_t hint,
 
 static void cm_power_set_interactive(struct power_module *module, int on)
 {
-    sysfs_write(SAMPLING_RATE_ONDEMAND,
-            on ? SAMPLING_RATE_SCREEN_ON : SAMPLING_RATE_SCREEN_OFF);
+    char governor[80];
+    if (get_scaling_governor(governor, sizeof(governor)) >= 0)
+        if (strncmp(governor, "ondemand", 8) == 0)
+            sysfs_write(SAMPLING_RATE_ONDEMAND,
+                    on ? SAMPLING_RATE_SCREEN_ON : SAMPLING_RATE_SCREEN_OFF);
 }
 
 static void cm_power_init(struct power_module *module)
