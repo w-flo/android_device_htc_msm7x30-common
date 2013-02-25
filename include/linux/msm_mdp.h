@@ -1,7 +1,7 @@
 /* include/linux/msm_mdp.h
  *
  * Copyright (C) 2007 Google Incorporated
- * Copyright (c) 2012 Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2013 Code Aurora Forum. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -68,9 +68,15 @@
 						struct msmfb_data)
 #define MSMFB_WRITEBACK_TERMINATE _IO(MSMFB_IOCTL_MAGIC, 155)
 #define MSMFB_MDP_PP _IOWR(MSMFB_IOCTL_MAGIC, 156, struct msmfb_mdp_pp)
+
 #define MSMFB_OVERLAY_VSYNC_CTRL  _IOW(MSMFB_IOCTL_MAGIC, 160, unsigned int)
 #define MSMFB_VSYNC_CTRL  _IOW(MSMFB_IOCTL_MAGIC, 161, unsigned int)
-#define MSMFB_OVERLAY_COMMIT      _IOW(MSMFB_IOCTL_MAGIC, 163, unsigned int)
+
+#define MSMFB_BUFFER_SYNC  _IOW(MSMFB_IOCTL_MAGIC, 165, struct mdp_buf_sync)
+#define MSMFB_METADATA_SET  _IOW(MSMFB_IOCTL_MAGIC, 166, struct msmfb_metadata)
+#define MSMFB_DISPLAY_COMMIT      _IOW(MSMFB_IOCTL_MAGIC, 164, \
+						struct mdp_display_commit)
+#define MSMFB_OVERLAY_COMMIT      _IO(MSMFB_IOCTL_MAGIC, 163)
 
 #define FB_TYPE_3D_PANEL 0x10101010
 #define MDP_IMGTYPE2_START 0x10000
@@ -149,7 +155,7 @@ enum {
 #define MDP_DEINTERLACE_ODD		0x00400000
 #define MDP_OV_PLAY_NOWAIT		0x00200000
 #define MDP_SOURCE_ROTATED_90		0x00100000
-#define MDP_DPP_HSIC			0x00080000
+#define MDP_OVERLAY_PP_CFG_EN		0x00080000
 #define MDP_BACKEND_COMPOSITION		0x00040000
 #define MDP_BORDERFILL_SUPPORTED	0x00010000
 #define MDP_SECURE_OVERLAY_SESSION      0x00008000
@@ -251,6 +257,7 @@ struct msmfb_overlay_data {
 	uint32_t version_key;
 	struct msmfb_data plane1_data;
 	struct msmfb_data plane2_data;
+	struct msmfb_data dst_data;
 };
 
 struct msmfb_img {
@@ -265,15 +272,47 @@ struct msmfb_writeback_data {
 	struct msmfb_img img;
 };
 
-struct dpp_ctrl {
-	/*
-	 *'sharp_strength' has inputs = -128 <-> 127
-	 *  Increasingly positive values correlate with increasingly sharper
-	 *  picture. Increasingly negative values correlate with increasingly
-	 *  smoothed picture.
-	 */
-	int8_t sharp_strength;
-	int8_t hsic_params[NUM_HSIC_PARAM];
+#define MDP_PP_OPS_READ 0x2
+#define MDP_PP_OPS_WRITE 0x4
+
+struct mdp_qseed_cfg {
+	uint32_t table_num;
+	uint32_t ops;
+	uint32_t len;
+	uint32_t *data;
+};
+
+struct mdp_qseed_cfg_data {
+	uint32_t block;
+	struct mdp_qseed_cfg qseed_data;
+};
+
+#define MDP_OVERLAY_PP_CSC_CFG      0x1
+#define MDP_OVERLAY_PP_QSEED_CFG    0x2
+
+#define MDP_CSC_FLAG_ENABLE	0x1
+#define MDP_CSC_FLAG_YUV_IN	0x2
+#define MDP_CSC_FLAG_YUV_OUT	0x4
+
+struct mdp_csc_cfg {
+	/* flags for enable CSC, toggling RGB,YUV input/output */
+	uint32_t flags;
+	uint32_t csc_mv[9];
+	uint32_t csc_pre_bv[3];
+	uint32_t csc_post_bv[3];
+	uint32_t csc_pre_lv[6];
+	uint32_t csc_post_lv[6];
+};
+
+struct mdp_csc_cfg_data {
+	uint32_t block;
+	struct mdp_csc_cfg csc_data;
+};
+
+struct mdp_overlay_pp_params {
+	uint32_t config_ops;
+	struct mdp_csc_cfg csc_cfg;
+	struct mdp_qseed_cfg qseed_cfg[2];
 };
 
 struct mdp_overlay {
@@ -287,7 +326,7 @@ struct mdp_overlay {
 	uint32_t flags;
 	uint32_t id;
 	uint32_t user_data[8];
-	struct dpp_ctrl dpp;
+	struct mdp_overlay_pp_params overlay_pp_cfg;
 };
 
 struct msmfb_overlay_3d {
@@ -340,9 +379,9 @@ enum {
 };
 
 /*
-mdp_histogram_start_req is used to provide the parameters for
-histogram start request
-*/
+ * mdp_histogram_start_req is used to provide the parameters for
+ *histogram start request
+ */
 
 struct mdp_histogram_start_req {
 	uint32_t block;
@@ -353,10 +392,8 @@ struct mdp_histogram_start_req {
 
 
 /*
-
-   mdp_histogram_data is used to return the histogram data, once
-   the histogram is done/stopped/cance
-
+ * mdp_histogram_data is used to return the histogram data, once
+ * the histogram is done/stopped/cance
  */
 
 
@@ -378,28 +415,6 @@ struct mdp_pcc_cfg_data {
 	uint32_t ops;
 	struct mdp_pcc_coeff r, g, b;
 };
-
-#define MDP_CSC_FLAG_ENABLE	0x1
-#define MDP_CSC_FLAG_YUV_IN	0x2
-#define MDP_CSC_FLAG_YUV_OUT	0x4
-
-struct mdp_csc_cfg {
-	/* flags for enable CSC, toggling RGB,YUV input/output */
-	uint32_t flags;
-	uint32_t csc_mv[9];
-	uint32_t csc_pre_bv[3];
-	uint32_t csc_post_bv[3];
-	uint32_t csc_pre_lv[6];
-	uint32_t csc_post_lv[6];
-};
-
-struct mdp_csc_cfg_data {
-	uint32_t block;
-	struct mdp_csc_cfg csc_data;
-};
-
-#define MDP_PP_OPS_READ 0x2
-#define MDP_PP_OPS_WRITE 0x4
 
 enum {
 	mdp_lut_igc,
@@ -454,15 +469,6 @@ struct mdp_bl_scale_data {
 	uint32_t scale;
 };
 
-struct mdp_qseed_cfg_data {
-	uint32_t block;
-	uint32_t table_num;
-	uint32_t ops;
-	uint32_t len;
-	uint32_t *data;
-};
-
-
 enum {
 	mdp_op_pcc_cfg,
 	mdp_op_csc_cfg,
@@ -483,6 +489,47 @@ struct msmfb_mdp_pp {
 	} data;
 };
 
+enum {
+	metadata_op_none,
+	metadata_op_base_blend,
+	metadata_op_max
+};
+
+#define MDP_MAX_FENCE_FD	10
+#define MDP_BUF_SYNC_FLAG_WAIT	1
+
+struct mdp_buf_sync {
+	uint32_t flags;
+	uint32_t acq_fen_fd_cnt;
+	int *acq_fen_fd;
+	int *rel_fen_fd;
+};
+
+struct mdp_blend_cfg {
+	uint32_t is_premultiplied;
+};
+
+struct msmfb_metadata {
+	uint32_t op;
+	uint32_t flags;
+	union {
+		struct mdp_blend_cfg blend_cfg;
+	} data;
+};
+struct mdp_buf_fence {
+	uint32_t flags;
+	uint32_t acq_fen_fd_cnt;
+	int acq_fen_fd[MDP_MAX_FENCE_FD];
+	int rel_fen_fd[MDP_MAX_FENCE_FD];
+};
+
+#define MDP_DISPLAY_COMMIT_OVERLAY 0x00000001
+
+struct mdp_display_commit {
+	uint32_t flags;
+	uint32_t wait_for_finish;
+	struct fb_var_screeninfo var;
+};
 
 struct mdp_page_protection {
 	uint32_t page_protection;
