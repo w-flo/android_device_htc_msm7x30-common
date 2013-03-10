@@ -76,7 +76,12 @@ PRODUCT_PACKAGES += \
     libmemalloc \
     liboverlay \
     libQcomUI \
-    libtilerenderer
+    libtilerenderer \
+    libdashplayer
+
+#wireless
+PRODUCT_PACKAGES += \
+    libnetcmdiface
 
 # Power HAL
 PRODUCT_PACKAGES += \
@@ -135,4 +140,3 @@ PRODUCT_PROPERTY_OVERRIDES += \
     debug.composition.type=gpu \
     debug.sf.hw=1 \
     debug.egl.hw=1
-
