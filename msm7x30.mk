@@ -95,7 +95,7 @@ PRODUCT_PACKAGES += \
     libdivxdrmdecrypt \
     libOmxVdec \
     libstagefrighthw \
-    libI420colorconvert
+    libc2dcolorconvert
 
 # Misc
 PRODUCT_PACKAGES += \
