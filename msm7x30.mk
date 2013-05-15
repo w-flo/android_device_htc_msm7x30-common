@@ -111,6 +111,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     Torch
 
+# Misc Packages
+PRODUCT_PACKAGES += \
+    DeviceSettings \
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
