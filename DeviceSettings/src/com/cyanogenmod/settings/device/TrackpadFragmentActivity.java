@@ -47,6 +47,7 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
     private Preference mQuickLaunch;
     private PreferenceScreen mPrefSet;
     private ContentResolver mCr;
+    private static final String LOG_TAG = "Flinny";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,12 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
         
         addPreferencesFromResource(R.xml.trackball_preferences);
 
+        Log.e(LOG_TAG, "In Code");
+
         if (sTrackball) {
+
+            Log.e(LOG_TAG, "In sTrackball");
+
             mTrackballWake = (CheckBoxPreference) findPreference(TRACKBALL_WAKE_TOGGLE);
             mTrackballWake.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.TRACKBALL_WAKE_SCREEN, 1) == 1);
@@ -67,6 +73,7 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
                 Settings.System.TRACKBALL_UNLOCK_SCREEN, 1) == 1);
         }
         if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_QWERTY) {
+            Log.e(LOG_TAG, "has_keyboard");
             mQuickLaunch = (Preference) findPreference(QUICK_LAUNCH);
         }
 
@@ -78,9 +85,11 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
         String key = preference.getKey();
 
         if (preference == mTrackballWake) {
+            Log.e(LOG_TAG, "In preference mTrackballWake");
             Settings.System.putInt(mCr, Settings.System.TRACKBALL_WAKE_SCREEN, mTrackballWake.isChecked() ? 1 : 0);
         }
         if (preference == mTrackballUnlockScreen) {
+            Log.e(LOG_TAG, "In preference mTrackballUnlockScreen");
             Settings.System.putInt(mCr, Settings.System.TRACKBALL_UNLOCK_SCREEN, mTrackballUnlockScreen.isChecked() ? 1 : 0);
         }
         Log.w(TAG, "key: " + key);

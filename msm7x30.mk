@@ -98,7 +98,8 @@ PRODUCT_PACKAGES += \
 
 # Misc
 PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory
+    com.android.future.usb.accessory \
+    DeviceSettings
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
