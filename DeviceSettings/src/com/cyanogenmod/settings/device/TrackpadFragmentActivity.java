@@ -54,21 +54,17 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
 
         Resources res = getResources();
         sTrackball = res.getBoolean(R.bool.has_trackball);
-        mCr = getContentResolver();
+        mCr = getActivity().getContentResolver();
         
         addPreferencesFromResource(R.xml.trackball_preferences);
 
         if (sTrackball) {
             mTrackballWake = (CheckBoxPreference) findPreference(TRACKBALL_WAKE_TOGGLE);
-            mTrackballWake.setChecked(Settings.System.getInt(getContentResolver(),
+            mTrackballWake.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.TRACKBALL_WAKE_SCREEN, 1) == 1);
-            mTrackballWake.setOnPreferenceChangeListener(this);
-
             mTrackballUnlockScreen = (CheckBoxPreference) findPreference(TRACKBALL_UNLOCK_TOGGLE);
-            mTrackballUnlockScreen.setChecked(Settings.System.getInt(getContentResolver(),
+            mTrackballUnlockScreen.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.TRACKBALL_UNLOCK_SCREEN, 1) == 1);
-            mTrackballUnlockScreen.setOnPreferenceChangeListener(this);
-
         }
         if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_QWERTY) {
             mQuickLaunch = (Preference) findPreference(QUICK_LAUNCH);
@@ -80,23 +76,19 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         String boxValue;
         String key = preference.getKey();
+
+        if (preference == mTrackballWake) {
+            Settings.System.putInt(mCr, Settings.System.TRACKBALL_WAKE_SCREEN, mTrackballWake.isChecked() ? 1 : 0);
+        }
+        if (preference == mTrackballUnlockScreen) {
+            Settings.System.putInt(mCr, Settings.System.TRACKBALL_UNLOCK_SCREEN, mTrackballUnlockScreen.isChecked() ? 1 : 0);
+        }
         Log.w(TAG, "key: " + key);
         return true;
     }
 
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        String key = preference.getKey();
-
-        if (TRACKBALL_WAKE_TOGGLE.equals(key)) {
-            Settings.System.putInt(mCr, Settings.System.TRACKBALL_WAKE_SCREEN, (Boolean) newValue ? 1 : 0);
-        } else if (TRACKBALL_UNLOCK_TOGGLE.equals(key)) {
-            Settings.System.putInt(mCr, Settings.System.TRACKBALL_UNLOCK_SCREEN, (Boolean) newValue ? 1 : 0);
-        }
-        return true;
-    }
-
-
     public static void restore(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
     }
 }
