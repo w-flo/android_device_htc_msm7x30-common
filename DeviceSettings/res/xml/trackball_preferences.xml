@@ -19,7 +19,8 @@
 
     <CheckBoxPreference android:key="pref_trackball_unlock_toggle"
         android:title="@string/pref_trackball_unlock_toggle_title"
-        android:summary="@string/pref_trackball_unlock_toggle_summary" />
+        android:summary="@string/pref_trackball_unlock_toggle_summary"
+        android:defaultValue="false" />
 
     <CheckBoxPreference android:key="pref_trackball_wake_toggle"
         android:title="@string/pref_trackball_wake_toggle_title"

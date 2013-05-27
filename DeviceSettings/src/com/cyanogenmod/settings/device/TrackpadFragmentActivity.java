@@ -63,7 +63,7 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
                 Settings.System.TRACKBALL_WAKE_SCREEN, 1) == 1);
             mTrackballUnlockScreen = (CheckBoxPreference) findPreference(TRACKBALL_UNLOCK_TOGGLE);
             mTrackballUnlockScreen.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.TRACKBALL_UNLOCK_SCREEN, 1) == 1);
+                Settings.System.TRACKBALL_UNLOCK_SCREEN, 0) == 1);
         }
 
     }
