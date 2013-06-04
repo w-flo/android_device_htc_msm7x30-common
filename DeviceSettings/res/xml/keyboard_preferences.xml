@@ -16,14 +16,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
             android:title="@string/trackpad_title">
+    <Preference
+        android:key="pref_quick_launch"
+        android:title="@string/quick_launch_title"
+        android:summary="@string/quick_launch_summary">
+            <intent android:action="android.settings.QUICK_LAUNCH_SETTINGS" />
+    </Preference>
 
-    <CheckBoxPreference android:key="pref_trackball_unlock_toggle"
-        android:title="@string/pref_trackball_unlock_toggle_title"
-        android:summary="@string/pref_trackball_unlock_toggle_summary" />
-
-    <CheckBoxPreference android:key="pref_trackball_wake_toggle"
-        android:title="@string/pref_trackball_wake_toggle_title"
-        android:summary="@string/pref_trackball_wake_toggle_summary" />
+    <CheckBoxPreference android:key="pref_force_keyboard_light"
+        android:title="@string/force_keyboard_light_title"
+        android:summary="@string/force_keyboard_light_summary"
+        android:defaultValue="true" />
 
     </PreferenceCategory>
 </PreferenceScreen>

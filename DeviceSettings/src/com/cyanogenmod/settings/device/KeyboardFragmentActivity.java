@@ -34,15 +34,14 @@ import android.provider.Settings;
 
 import com.cyanogenmod.settings.device.R;
 
-public class TrackpadFragmentActivity extends PreferenceFragment {
+public class KeyboardFragmentActivity extends PreferenceFragment {
 
-    private static final String TAG = "DeviceSettings_Trackpad";
-    private static final String TRACKBALL_WAKE_TOGGLE = "pref_trackball_wake_toggle";
-    private static final String TRACKBALL_UNLOCK_TOGGLE = "pref_trackball_unlock_toggle";
+    private static final String TAG = "DeviceSettings_Keyboard";
+    private static final String KEY_KEYBOARD_LIGHT = "pref_force_keyboard_light";
+    private static final String QUICK_LAUNCH = "pref_quick_launch";
 
-    private static boolean sTrackball;
-    private CheckBoxPreference mTrackballWake;
-    private CheckBoxPreference mTrackballUnlockScreen;
+    private CheckBoxPreference mForceKeyboardLight;
+    private Preference mQuickLaunch;
     private PreferenceScreen mPrefSet;
     private ContentResolver mCr;
 
@@ -51,19 +50,18 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
         super.onCreate(savedInstanceState);
 
         Resources res = getResources();
-        sTrackball = res.getBoolean(R.bool.has_trackball);
         mCr = getActivity().getContentResolver();
 
-        addPreferencesFromResource(R.xml.trackball_preferences);
+        addPreferencesFromResource(R.xml.keyboard_preferences);
 
-        if (sTrackball) {
+        mForceKeyboardLight = (CheckBoxPreference) findPreference(KEY_KEYBOARD_LIGHT);
+        mForceKeyboardLight.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
+            Settings.System.FORCE_KEYBOARD_LIGHT, 1) == 1);
 
-            mTrackballWake = (CheckBoxPreference) findPreference(TRACKBALL_WAKE_TOGGLE);
-            mTrackballWake.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.TRACKBALL_WAKE_SCREEN, 1) == 1);
-            mTrackballUnlockScreen = (CheckBoxPreference) findPreference(TRACKBALL_UNLOCK_TOGGLE);
-            mTrackballUnlockScreen.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.TRACKBALL_UNLOCK_SCREEN, 1) == 1);
+        mQuickLaunch = (Preference) findPreference(QUICK_LAUNCH);
+        if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_QWERTY) {
+            getPreferenceScreen().removePreference(mForceKeyboardLight);
+            getPreferenceScreen().removePreference(mQuickLaunch);
         }
 
     }
@@ -73,21 +71,16 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
         String boxValue;
         String key = preference.getKey();
 
-        if (preference == mTrackballWake) {
-            Settings.System.putInt(mCr, Settings.System.TRACKBALL_WAKE_SCREEN, mTrackballWake.isChecked() ? 1 : 0);
-        }
-        else if (preference == mTrackballUnlockScreen) {
-            Settings.System.putInt(mCr, Settings.System.TRACKBALL_UNLOCK_SCREEN, mTrackballUnlockScreen.isChecked() ? 1 : 0);
+        if (preference == mForceKeyboardLight) {
+            Settings.System.putInt(mCr, Settings.System.FORCE_KEYBOARD_LIGHT, mForceKeyboardLight.isChecked() ? 1 : 0);
         }
         else {
-     return false;
-          }
-        Log.w(TAG, "key: " + key);
-    return true;
+            return false;
+        }
+        return true;
     }
 
     public static void restore(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
     }
 }
