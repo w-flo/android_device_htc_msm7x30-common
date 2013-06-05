@@ -60,8 +60,6 @@ public class DeviceSettings extends FragmentActivity {
         mTabsAdapter = new TabsAdapter(this, mViewPager);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.category_trackpad_title),
                     TrackpadFragmentActivity.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText(R.string.category_keyboard_title),
-                    KeyboardFragmentActivity.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.category_touchscreen_title),
                     TouchscreenFragmentActivity.class, null);
 

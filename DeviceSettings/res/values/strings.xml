@@ -22,7 +22,6 @@
 
     <!-- Haptic Preference -->
     <string name="category_trackpad_title">Trackpad</string>
-    <string name="category_keyboard_title">Keyboard</string>
 
     <!-- Touchscreen Preference -->
     <string name="category_touchscreen_title">Touchscreen</string>

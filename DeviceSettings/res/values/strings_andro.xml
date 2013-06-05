@@ -29,9 +29,6 @@
     <string name="pref_trackball_wake_toggle_summary">Allow trackball to wake the device</string>
     <string name="pref_trackball_unlock_toggle_title">Trackball unlock</string>
     <string name="pref_trackball_unlock_toggle_summary">Allow trackball to unlock the device</string>
-    <string name="force_keyboard_light_title">Force keyboard backlight</string>
-    <string name="force_keyboard_light_summary">Hardware keyboard led will remain on when visible</string>
-
     <!-- Setting for Camera button play/pause controls -->
     <string name="cambtn_music_controls_title">Camera button music controls</string>
     <string name="cambtn_music_controls_summary">When screen off, long-pressing the camera button will play/pause the active music track</string>

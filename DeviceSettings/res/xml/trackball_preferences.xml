@@ -16,6 +16,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
             android:title="@string/trackpad_title">
+    <Preference
+        android:key="pref_quick_launch"
+        android:title="@string/quick_launch_title"
+        android:summary="@string/quick_launch_summary">
+            <intent android:action="android.settings.QUICK_LAUNCH_SETTINGS" />
+    </Preference>
 
     <CheckBoxPreference android:key="pref_trackball_unlock_toggle"
         android:title="@string/pref_trackball_unlock_toggle_title"

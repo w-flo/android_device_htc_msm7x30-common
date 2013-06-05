@@ -39,10 +39,12 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
     private static final String TAG = "DeviceSettings_Trackpad";
     private static final String TRACKBALL_WAKE_TOGGLE = "pref_trackball_wake_toggle";
     private static final String TRACKBALL_UNLOCK_TOGGLE = "pref_trackball_unlock_toggle";
+    private static final String QUICK_LAUNCH = "pref_quick_launch";
 
     private static boolean sTrackball;
     private CheckBoxPreference mTrackballWake;
     private CheckBoxPreference mTrackballUnlockScreen;
+    private Preference mQuickLaunch;
     private PreferenceScreen mPrefSet;
     private ContentResolver mCr;
 
@@ -53,7 +55,7 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
         Resources res = getResources();
         sTrackball = res.getBoolean(R.bool.has_trackball);
         mCr = getActivity().getContentResolver();
-
+        
         addPreferencesFromResource(R.xml.trackball_preferences);
 
         if (sTrackball) {
@@ -64,6 +66,11 @@ public class TrackpadFragmentActivity extends PreferenceFragment {
             mTrackballUnlockScreen = (CheckBoxPreference) findPreference(TRACKBALL_UNLOCK_TOGGLE);
             mTrackballUnlockScreen.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.TRACKBALL_UNLOCK_SCREEN, 0) == 1);
+        }
+
+        mQuickLaunch = (Preference) findPreference(QUICK_LAUNCH);
+        if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_QWERTY) {
+        getPreferenceScreen().removePreference(mQuickLaunch);
         }
 
     }
