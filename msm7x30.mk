@@ -107,9 +107,9 @@ PRODUCT_PACKAGES += \
     librs_jni
 
 # Misc Packages
-PRODUCT_PACKAGES += \
-    DeviceSettings \
-    Torch
+#PRODUCT_PACKAGES += \
+#    DeviceSettings \
+#    Torch
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
