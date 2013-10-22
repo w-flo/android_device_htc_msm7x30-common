@@ -89,7 +89,6 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_PREBUILT_LIBAUDIO := false
 TARGET_QCOM_AUDIO_VARIANT := caf
 BOARD_HAVE_HTC_AUDIO := true
-TARGET_QCOM_MEDIA_VARIANT := this-value-intentionally-left-invalid-so-media-is-not-compiled-at-all
 
 #BOARD_HAVE_QCOM_FM := true
 #BOARD_USES_QCOM_AUDIO_LPA := true
